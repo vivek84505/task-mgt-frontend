@@ -1,0 +1,231 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f9;
+}
+
+/* Header */
+.header {
+  background-color: #2193f0;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Layout */
+.main-layout {
+  display: flex;
+  min-height: calc(100vh - 80px);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #1f2937;
+  color: white;
+  padding: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sidebar li:hover {
+  background-color: #374151;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  padding: 30px;
+}
+
+.content h2 {
+  margin-bottom: 15px;
+}
+
+.content p {
+  margin-bottom: 20px;
+}
+
+/* Card */
+.card {
+  max-width: 100%;
+  max-height: fit-content;
+  margin: 30px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  text-align: center;
+}
+
+.counter-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Counter Text */
+.counter-value {
+  font-size: 32px;
+  color: #333;
+  margin: 0;
+}
+
+/* Buttons Container */
+.counter-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* Buttons */
+.counter-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2563eb;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.counter-buttons button:hover {
+  transform: translateY(-2px);
+}
+
+.counter-buttons button:last-child {
+  background-color: #dc2626;
+}
+
+.card h3 {
+  margin-bottom: 15px;
+}
+
+pre {
+  background: #f1f1f1;
+  padding: 15px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+/* Footer */
+.footer {
+  background-color: #1f2937;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+}
+
+.studentname{
+  color:blue
+}
+
+.counter{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.student_id {
+  width: 520px; /* Increased width for the card */
+  background-color: #fff; /* White background */
+  border-radius: 25px; /* Rounded corners */
+  overflow: hidden; /* Hide overflow content */
+  box-shadow: 1px 0px 0px #a9a39e, 0px 1px 0px #a9a39e,
+              2px 1px 0px #a9a39e, 1px 2px 0px #a9a39e,
+              3px 2px 0px #958b83, 2px 3px 0px #958b83,
+              4px 3px 0px #93867c, 3px 4px 0px #93867c,
+              5px 4px 0px #93867c, 4px 5px 0px #93867c; /* 3d box-shadow effect */
+}
+
+/* Top section styling */
+.top_section {
+  display: flex; /* Flexbox layout */
+  padding: 30px; /* Increased padding inside the top section */
+  background: linear-gradient(to right, #e84610, #ffffff); /* Gradient to right gradient */
+  color: white; /* White text color */
+}
+
+/* Profile photo styling */
+.profile_photo {
+  flex-shrink: 0; /* Prevent photo from shrinking */
+}
+
+.profile_photo img {
+  width: 125px; /* Increased width for the photo */
+  height: 125px; /* Increased height for the photo */
+  border-radius: 50%; /* Circular photo */
+  border: 2px solid #fff; /* White border */
+  object-fit: cover; /* Stop image from skewing */
+}
+
+/* Student name section */
+.student_name {
+  margin-left: 20px; /* Space between photo and name */
+  display: flex;
+  flex-direction: column; /* Stack name and age vertically */
+  justify-content: center; /* Center vertically */
+}
+
+.student_info {
+  list-style: none; /* Remove bullet points */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+/* Student name styling */
+.student_info .name {
+  font-size: 1.5em; /* Larger font size */
+  font-weight: bold; /* Bold text */
+}
+
+/* Student age styling */
+.student_info .age {
+  font-size: 1.1em; /* Larger font size */
+  margin-top: 5px; /* Space above age */
+}
+
+/* Bottom section styling */
+.bottom_section {
+  padding: 30px; /* Increased padding inside the bottom section */
+}
+
+.student_details {
+  margin-top: 10px; /* Space above details */
+}
+
+.student_details ul {
+  list-style: none; /* Remove bullet points */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+/* Styling for each detail */
+.student_details li {
+  margin-bottom: 10px; /* Space below each detail */
+  font-size: 1.1em; /* Larger font size for details */
+  color: #555; /* Dark grey text */
+}
+
+span {
+  font-weight: bold;
+}
