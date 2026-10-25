@@ -1,6 +1,6 @@
 
 
-const headerTitle = "React Functional Components Demo";
+const headerTitle = "Task Management System";
 const footerTitle = "© 2027 React Learning Hub | Built with React Functional Components"
 const sidebarTitle = "Admin Panel"
 

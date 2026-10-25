@@ -6,8 +6,7 @@ function Header(props) {
 
   const {theme,toggleTheme} = useContext(ThemeContext)
   
-  //  console.log("Header Component Rendered============>")
- console.log("Header")
+ 
   return (
     <header className="header">
        
