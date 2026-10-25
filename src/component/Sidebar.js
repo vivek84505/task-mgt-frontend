@@ -25,6 +25,14 @@ function Sidebar({ title = "Task Management" }) {
       path: "/tasks",
       icon: "bi-kanban",
     },
+
+     {
+      name: "Kanban",
+      path: "/kanban",
+      icon: "bi-kanban",
+    },
+
+    
     {
       name: "Reports",
       path: "/reports",

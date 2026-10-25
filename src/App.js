@@ -14,6 +14,7 @@ import TaskManagement from "./component/task/TaskManagement";
 import "./App.css"; 
 import NotFound from "./component/pages/NotFound"; 
 import Employee from "./component/Employee";
+import TaskKanban from "./component/task/TaskKanban";
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
               <Route path="/employee" element={<Employee/>}/>
               <Route path="/users" element={<UsersManagement/>}/>
               <Route path="/tasks" element={<TaskManagement/>} />  
+              <Route path="/kanban" element={<TaskKanban/>}/>
               <Route path= "*" element={<h1>404 Page Not Found</h1>}/>
               <Route component={NotFound} />  
 
