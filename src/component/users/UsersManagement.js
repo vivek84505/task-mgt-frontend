@@ -1,5 +1,8 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import api from "../services/api";
+
 import "../custom-css/UsersManagement.css"
 const mockUsers = [
   {
@@ -9,7 +12,7 @@ const mockUsers = [
     role: "Admin",
     department: "IT",
     status: "Active",
-    joinedDate: "2025-01-15",
+    created_at: "2025-01-15",
   },
   {
     id: 2,
@@ -18,7 +21,7 @@ const mockUsers = [
     role: "User",
     department: "HR",
     status: "Active",
-    joinedDate: "2025-02-10",
+    created_at: "2025-02-10",
   },
   {
     id: 3,
@@ -27,7 +30,7 @@ const mockUsers = [
     role: "User",
     department: "Finance",
     status: "Inactive",
-    joinedDate: "2024-11-20",
+    created_at: "2024-11-20",
   },
   {
     id: 4,
@@ -36,7 +39,7 @@ const mockUsers = [
     role: "Manager",
     department: "Engineering",
     status: "Active",
-    joinedDate: "2025-03-05",
+    created_at: "2025-03-05",
   },
   {
     id: 5,
@@ -45,7 +48,7 @@ const mockUsers = [
     role: "User",
     department: "Engineering",
     status: "Pending",
-    joinedDate: "2025-04-18",
+    created_at: "2025-04-18",
   },
   {
     id: 6,
@@ -54,12 +57,15 @@ const mockUsers = [
     role: "Admin",
     department: "IT",
     status: "Active",
-    joinedDate: "2024-09-12",
+    created_at: "2024-09-12",
   },
 ];
 
+
+
+
 function UsersManagement() {
-  const [users, setUsers] = useState(mockUsers);
+  const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -68,15 +74,15 @@ function UsersManagement() {
     const searchText = search.toLowerCase();
 
     const matchesSearch =
-      user.name.toLowerCase().includes(searchText) ||
-      user.email.toLowerCase().includes(searchText) ||
-      user.department.toLowerCase().includes(searchText);
+      user?.name?.toLowerCase().includes(searchText) ||
+      user?.email?.toLowerCase().includes(searchText) ||
+      user?.department?.toLowerCase().includes(searchText);
 
     const matchesRole =
       roleFilter === "All" || user.role === roleFilter;
 
     const matchesStatus =
-      statusFilter === "All" || user.status === statusFilter;
+      statusFilter === "All" || user.is_active === statusFilter;
 
     return matchesSearch && matchesRole && matchesStatus;
   });
@@ -125,12 +131,31 @@ function UsersManagement() {
   };
 
   const activeCount = users.filter(
-    (user) => user.status === "Active"
+    (user) => user.is_active === true
   ).length;
 
   const adminCount = users.filter(
-    (user) => user.role === "Admin"
+    (user) => user.role === "ADMIN"
   ).length;
+
+  useEffect(() => {
+    getUsers();
+  }, [])
+
+
+  const getUsers = async () => {
+    const response = await api.get("api/users")
+    console.log("Response====>", response)
+    if(response.data.status == "sucessfull" && response.data.data.length > 0){
+      setUsers(response.data.data)
+    }
+    else{
+      alert("Data Not found")
+    }
+
+  }
+
+
 
   return (
     <div className="users-page">
@@ -259,13 +284,13 @@ function UsersManagement() {
             <tbody>
               {filteredUsers.length > 0 ? (
                 filteredUsers.map((user) => (
-                  <tr key={user.id}>
+                  <tr key={user.user_id}>
                     <td>
                       <div className="user-info-cell">
                         <div
-                          className={`user-avatar ${getAvatarColor(user.id)}`}
+                          className={`user-avatar ${getAvatarColor(user.user_id)}`}
                         >
-                          {getInitials(user.name)}
+                          {getInitials(user.firstname)}
                         </div>
 
                         <div className="user-details">
@@ -286,21 +311,23 @@ function UsersManagement() {
                     </td>
 
                     <td className="department-cell">
-                      {user.department}
+                      {user?.department}
                     </td>
 
                     <td>
                       <span
-                        className={`status-badge status-${user.status.toLowerCase()}`}
+                        className={`status-badge status-${ (user.is_active  ?  'active' : 'inactive')}`}
                       >
                         <span className="status-dot"></span>
-                        {user.status}
+                        {
+                          (user.is_active  ?  'Active' : 'Inactive')
+                        }
                       </span>
                     </td>
 
                     <td className="date-cell">
                       {new Date(
-                        `${user.joinedDate}T00:00:00`
+                        `${user.created_at}T00:00:00`
                       ).toLocaleDateString("en-IN", {
                         day: "2-digit",
                         month: "short",
@@ -365,18 +392,18 @@ function UsersManagement() {
           {(search ||
             roleFilter !== "All" ||
             statusFilter !== "All") && (
-            <button
-              className="btn btn-sm btn-light"
-              onClick={() => {
-                setSearch("");
-                setRoleFilter("All");
-                setStatusFilter("All");
-              }}
-            >
-              <i className="bi bi-x-circle me-1"></i>
-              Clear filters
-            </button>
-          )}
+              <button
+                className="btn btn-sm btn-light"
+                onClick={() => {
+                  setSearch("");
+                  setRoleFilter("All");
+                  setStatusFilter("All");
+                }}
+              >
+                <i className="bi bi-x-circle me-1"></i>
+                Clear filters
+              </button>
+            )}
         </div>
       </div>
     </div>
