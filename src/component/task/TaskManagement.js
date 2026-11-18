@@ -365,7 +365,7 @@ function TaskManagement() {
             <div className="task-modal-header">
               <div>
                 <h2 id="add-task-title">Create New Task</h2>
-                <p>Add a task to your project board.</p>
+                <p>Add a to your project board.</p>
               </div>
 
               <button

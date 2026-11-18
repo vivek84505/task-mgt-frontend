@@ -4,71 +4,23 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 
 import "../custom-css/UsersManagement.css"
-const mockUsers = [
-  {
-    id: 1,
-    name: "Aarav Sharma",
-    email: "aarav.sharma@example.com",
-    role: "Admin",
-    department: "IT",
-    status: "Active",
-    created_at: "2025-01-15",
-  },
-  {
-    id: 2,
-    name: "Priya Patel",
-    email: "priya.patel@example.com",
-    role: "User",
-    department: "HR",
-    status: "Active",
-    created_at: "2025-02-10",
-  },
-  {
-    id: 3,
-    name: "Rahul Verma",
-    email: "rahul.verma@example.com",
-    role: "User",
-    department: "Finance",
-    status: "Inactive",
-    created_at: "2024-11-20",
-  },
-  {
-    id: 4,
-    name: "Sneha Kulkarni",
-    email: "sneha.kulkarni@example.com",
-    role: "Manager",
-    department: "Engineering",
-    status: "Active",
-    created_at: "2025-03-05",
-  },
-  {
-    id: 5,
-    name: "Rohan Deshmukh",
-    email: "rohan.deshmukh@example.com",
-    role: "User",
-    department: "Engineering",
-    status: "Pending",
-    created_at: "2025-04-18",
-  },
-  {
-    id: 6,
-    name: "Ananya Singh",
-    email: "ananya.singh@example.com",
-    role: "Admin",
-    department: "IT",
-    status: "Active",
-    created_at: "2024-09-12",
-  },
-];
 
 
 
 
 function UsersManagement() {
   const [users, setUsers] = useState([]);
+  const [errors,setErrors] = useState({})
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [showModal,setShowModal] = useState(false)
+  const [formData , setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    role: "",
+  })
 
   const filteredUsers = users.filter((user) => {
     const searchText = search.toLowerCase();
@@ -86,6 +38,59 @@ function UsersManagement() {
 
     return matchesSearch && matchesRole && matchesStatus;
   });
+
+  const handleChange = (e) => {
+ 
+    const {name,value} = e.target;
+    setFormData((prevData) => (
+      {...prevData,[name]:value}
+    )
+  )
+
+  }
+
+  const validateForm = () => {
+
+      let newErrors = {}
+
+      if(!formData.firstname.trim()){
+          newErrors.firstname = "Firstname is required"
+      }
+
+      if(!formData.lastname.trim()){
+          newErrors.lastname = "Lastname is required"
+      }
+
+      if(!formData.role.trim()){
+          newErrors.role = "Role is required"
+      }
+
+        if(!formData.email.trim()){
+          newErrors.email = "Email is required"
+      }
+
+      
+      
+     
+      setErrors(newErrors)
+    
+
+      
+
+      return Object.keys(newErrors).length === 0
+
+
+  }
+
+  const addUser = async (e) => {
+    e.preventDefault()
+
+    if(validateForm()){
+      alert("Form validated sucessfully")
+      // API calling code
+    }
+
+  }
 
   const getInitials = (name) =>
     name
@@ -119,7 +124,8 @@ function UsersManagement() {
   };
 
   const handleAddUser = () => {
-    alert("Connect this button to your Add User form.");
+    setShowModal(true)
+   
   };
 
   const handleEdit = (user) => {
@@ -130,6 +136,8 @@ function UsersManagement() {
     alert(`Connect this action to view ${user.name}.`);
   };
 
+ 
+ 
   const activeCount = users.filter(
     (user) => user.is_active === true
   ).length;
@@ -271,8 +279,8 @@ function UsersManagement() {
             <thead>
               <tr>
                 <th scope="col">USER</th>
-                <th scope="col">ROLE</th>
-                <th scope="col">DEPARTMENT</th>
+                <th scope="col">EMAIL</th>
+                <th scope="col">ROLE</th>            
                 <th scope="col">STATUS</th>
                 <th scope="col">JOINED DATE</th>
                 <th scope="col" className="text-end">
@@ -296,11 +304,20 @@ function UsersManagement() {
                         <div className="user-details">
                           <div className="user-name">{user.name}</div>
                           <div className="user-email">
-                            {user.email}
+                            {user.firstname} {user.lastname} 
                           </div>
                         </div>
                       </div>
                     </td>
+
+                     <td>
+                      <span
+                        className={`role-badge role-${user.email.toLowerCase()}`}
+                      >
+                        {user.email}
+                      </span>
+                    </td>
+
 
                     <td>
                       <span
@@ -382,6 +399,136 @@ function UsersManagement() {
           </table>
         </div>
 
+         {/* Add User modal */}
+      {showModal && (
+        <div
+          className="task-modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setShowModal(false);
+            }
+          }}
+        >
+          <div
+            className="task-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="add-task-title"
+          >
+            <div className="task-modal-header">
+              <div>
+                <h2 id="add-task-title">Create New User</h2>
+                <p>Add a user to your project board.</p>
+              </div>
+
+              <button
+                type="button"
+                className="task-modal-close"
+                onClick={() => setShowModal(false)}
+                aria-label="Close modal"
+              >
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+
+    
+
+               
+            <form onSubmit={addUser}>
+              <div className="task-modal-body">
+                <div className="row">
+                    <div className="col-md-6">
+                      <label htmlFor="task-title">Firstname</label>
+                      <input
+                      id="task-title"
+                      className="form-control"
+                      name="firstname"
+                      value={formData.firstname}
+                      onChange={handleChange}
+                      placeholder="firstname"
+                      maxLength={150}                     
+                      autoFocus
+                      />
+                        <small className="text-danger">{errors.firstname}</small>
+
+                    </div>
+                  
+
+                     <div className="col-md-6">
+                      <label htmlFor="task-title">Lastname</label>
+                      <input
+                      id="task-title"
+                      name="lastname"
+                      className="form-control"
+                      value={formData.lastname}
+                      onChange={handleChange}
+                      placeholder="lastname"
+                      maxLength={150}                      
+                      autoFocus
+                      />
+
+                       <small className="text-danger"> {errors.lastname}</small>
+
+                    </div>
+                </div>
+               
+                <div className="row">
+                    <div className="col-md-6">
+                        <label htmlFor="task-category">Role</label>
+                        <select
+                        id="task-category"
+                        className="form-select"
+                        name="role"
+                        value={formData.role}
+                        onChange={handleChange}
+                        >
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="USER" >USER</option>
+                       
+                        </select>
+
+                          <small className="text-danger">{errors.role}</small>
+                    </div>
+
+                    <div className="col-md-6">
+                          <label htmlFor="task-due-date">Email</label>
+                          <input
+                          id="task-due-date"
+                          type="text"
+                          name="email"
+                          className="form-control"
+                          value={formData.email}
+                          placeholder="email"
+                          onChange={handleChange}
+                          />
+
+                            <small className="text-danger"> {errors.email}</small>
+                    </div>
+                </div>
+                
+
+               
+
+                
+              </div>
+
+              <div className="task-modal-footer">
+                <button
+                  type="button"
+                  className="task-cancel-btn"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="task-add-btn">
+                  Create Task <i className="bi bi-plus-lg"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+         )}
+
         {/* Table Footer */}
         <div className="users-table-footer">
           <span>
@@ -406,7 +553,10 @@ function UsersManagement() {
             )}
         </div>
       </div>
+      
     </div>
+
+    
   );
 }
 
