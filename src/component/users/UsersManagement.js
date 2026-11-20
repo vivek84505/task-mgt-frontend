@@ -20,7 +20,15 @@ function UsersManagement() {
     lastname: "",
     email: "",
     role: "",
+    is_active:true
   })
+   
+  let sample = [10,20,30,40]
+  var res = sample.filter((num) => true)
+  console.log("Filter Result",res)
+//  [20,30,40]
+
+ 
 
   const filteredUsers = users.filter((user) => {
     const searchText = search.toLowerCase();
@@ -32,12 +40,16 @@ function UsersManagement() {
 
     const matchesRole =
       roleFilter === "All" || user.role === roleFilter;
+    
 
     const matchesStatus =
-      statusFilter === "All" || user.is_active === statusFilter;
+      statusFilter === "All" || String(user.is_active) === (statusFilter);
 
     return matchesSearch && matchesRole && matchesStatus;
   });
+
+  console.log("statusFilter value ==========>",statusFilter)
+
 
   const handleChange = (e) => {
  
@@ -86,7 +98,21 @@ function UsersManagement() {
     e.preventDefault()
 
     if(validateForm()){
-      alert("Form validated sucessfully")
+       
+     
+
+      const response = await api.post("api/users",formData) 
+
+      if(response?.data?.status == "sucessfull" && response?.data?.data.length > 0){
+
+           getUsers();
+      }
+      else{
+      alert("Something Went wrong")
+      }
+
+
+
       // API calling code
     }
 
@@ -254,21 +280,19 @@ function UsersManagement() {
               aria-label="Filter by role"
             >
               <option value="All">All Roles</option>
-              <option value="Admin">Admin</option>
-              <option value="Manager">Manager</option>
-              <option value="User">User</option>
+              <option value="ADMIN">Admin</option>              
+              <option value="USER">User</option>
             </select>
 
             <select
               className="form-select"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) =>  setStatusFilter(e.target.value) }
               aria-label="Filter by status"
             >
               <option value="All">All Statuses</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-              <option value="Pending">Pending</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>            
             </select>
           </div>
         </div>
