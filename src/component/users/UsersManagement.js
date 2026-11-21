@@ -15,12 +15,21 @@ function UsersManagement() {
   const [roleFilter, setRoleFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [showModal,setShowModal] = useState(false)
+  const [editModal,setEditModal] = useState(false)
   const [formData , setFormData] = useState({
     firstname: "",
     lastname: "",
     email: "",
     role: "",
     is_active:true
+  })
+
+   const [editformData , setEditFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    role: "",
+    is_active:null
   })
    
   let sample = [10,20,30,40]
@@ -55,6 +64,21 @@ function UsersManagement() {
  
     const {name,value} = e.target;
     setFormData((prevData) => (
+      {...prevData,[name]:value}
+    )
+  )
+
+  }
+ 
+
+
+   const handleEditChange = (e) => {
+ 
+    const {name,value} = e.target;
+    
+    
+
+    setEditFormData((prevData) => (
       {...prevData,[name]:value}
     )
   )
@@ -118,6 +142,83 @@ function UsersManagement() {
 
   }
 
+
+  const validateEditForm = () => {
+
+      let newErrors = {}
+
+      if(!editformData.firstname.trim()){
+          newErrors.firstname = "Firstname is required"
+      }
+
+      if(!editformData.lastname.trim()){
+          newErrors.lastname = "Lastname is required"
+      }
+
+      if(!editformData.role.trim()){
+          newErrors.role = "Role is required"
+      }
+
+      if(!editformData.email.trim()){
+          newErrors.email = "Email is required"
+      }
+
+      if(!editformData.is_active.trim()){
+          newErrors.is_active = "Status is required"
+      } 
+     
+      setErrors(newErrors) 
+      
+
+      return Object.keys(newErrors).length === 0
+
+
+  }
+
+  const changeUserData = (user_id,updatedData) => {
+    setUsers((prevUsers) => 
+      prevUsers.map((user) => 
+        user.user_id === user_id ? {...user,...updatedData} : user
+      )
+    )
+  }
+
+
+ 
+  
+  
+
+  const updateUser = async (e) =>{
+    e.preventDefault()
+
+    // Rahul sharma  ===> get call loaded data => Rahul Sharma
+    // Rahul Sharma Updated
+
+    if(validateEditForm()){ 
+
+      const response = await api.put(`api/users/${editformData.user_id}`,editformData) 
+    
+      if(response?.data?.status == "sucessfull" && response?.data?.data.length > 0){
+     
+        alert("User Updated sucessfully")
+        // getUsers();
+        changeUserData(editformData.user_id,editformData)
+        setEditModal(false)
+          
+
+      }
+      else{
+        alert("Something Went wrong")
+      }
+
+
+
+      // API calling code
+    }
+
+    
+  }
+
   const getInitials = (name) =>
     name
       .split(" ")
@@ -155,7 +256,21 @@ function UsersManagement() {
   };
 
   const handleEdit = (user) => {
-    alert(`Connect this action to edit ${user.name}.`);
+    console.log("user.is_active",user.is_active)
+    const status = String(user.is_active)
+    setEditFormData({
+      user_id:user.user_id,
+      firstname:user.firstname,
+      lastname:user.lastname,
+      email:user.email,
+      role:user.role,
+      is_active:status
+    })
+
+    setEditModal(true)
+
+    console.log("status==========>",typeof(status))
+     
   };
 
   const handleView = (user) => {
@@ -384,7 +499,7 @@ function UsersManagement() {
                           aria-label={`View ${user.name}`}
                           onClick={() => handleView(user)}
                         >
-                          <i className="bi bi-eye"></i>
+                          <i className="bi bi-eye">View</i>
                         </button>
 
                         <button
@@ -393,7 +508,7 @@ function UsersManagement() {
                           aria-label={`Edit ${user.name}`}
                           onClick={() => handleEdit(user)}
                         >
-                          <i className="bi bi-pencil-square"></i>
+                          <i className="bi bi-pencil-square">Edit</i>
                         </button>
 
                         <button
@@ -402,7 +517,7 @@ function UsersManagement() {
                           aria-label={`Delete ${user.name}`}
                           onClick={() => handleDelete(user.id)}
                         >
-                          <i className="bi bi-trash3"></i>
+                          <i className="bi bi-trash3">Delete</i>
                         </button>
                       </div>
                     </td>
@@ -422,6 +537,163 @@ function UsersManagement() {
             </tbody>
           </table>
         </div>
+
+         {/* Edit User Modal START */}
+
+      {editModal && (
+        <div
+          className="task-modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setEditModal(false);
+            }
+          }}
+        >
+          <div
+            className="task-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="add-task-title"
+          >
+            <div className="task-modal-header">
+              <div>
+                <h2 id="add-task-title">Edit User</h2>               
+              </div>
+
+              <button
+                type="button"
+                className="task-modal-close"
+                onClick={() => setEditModal(false)}
+                aria-label="Close modal"
+              >
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+
+    
+
+               
+            <form onSubmit={updateUser}>
+              <div className="task-modal-body">
+                <div className="row">
+                    <div className="col-md-6">
+                      <label htmlFor="task-title">Firstname</label>
+                      <input
+                      id="task-title"
+                      className="form-control"
+                      name="firstname"
+                      value={editformData.firstname}
+                      onChange={handleEditChange}
+                      placeholder="firstname"
+                      maxLength={150}                     
+                      autoFocus
+                      />
+                        <small className="text-danger">{errors.firstname}</small>
+
+                    </div>
+                  
+
+                     <div className="col-md-6">
+                      <label htmlFor="task-title">Lastname</label>
+                      <input
+                      id="task-title"
+                      name="lastname"
+                      className="form-control"
+                      value={editformData.lastname}
+                      onChange={handleEditChange}
+                      placeholder="lastname"
+                      maxLength={150}                      
+                      autoFocus
+                      />
+
+                       <small className="text-danger"> {errors.lastname}</small>
+
+                    </div>
+                </div>
+               
+                <div className="row">
+                    <div className="col-md-6">
+                        <label htmlFor="task-category">Role</label>
+                        <select
+                        id="task-category"
+                        className="form-select"
+                        name="role"
+                        value={editformData.role}
+                        onChange={handleEditChange}
+                        >
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="USER" >USER</option>
+                       
+                        </select>
+
+                          <small className="text-danger">{errors.role}</small>
+                    </div>
+
+                    <div className="col-md-6">
+                          <label htmlFor="task-due-date">Email</label>
+                          <input
+                          id="task-due-date"
+                          type="text"
+                          name="email"
+                          className="form-control"
+                          value={editformData.email}
+                          placeholder="email"
+                          onChange={handleEditChange}
+                          />
+
+                            <small className="text-danger"> {errors.email}</small>
+                    </div>
+                </div>
+
+
+
+
+                  <div className="row">
+                    <div className="col-md-12">
+                        <label htmlFor="task-category">Status</label>
+                        <select
+                        id="task-category"
+                        className="form-select"
+                        name="is_active"
+                        value={editformData.is_active}
+                        onChange={handleEditChange}
+                        >
+                        <option value="true">Active</option>
+                        <option value="false" >Inactive</option>
+                       
+                        </select>
+
+                          <small className="text-danger">{errors.role}</small>
+                    </div>
+
+                     
+                </div>
+
+               
+
+                
+              </div>
+
+              
+
+              <div className="task-modal-footer">
+                <button
+                  type="button"
+                  className="task-cancel-btn"
+                  onClick={() => setEditModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="task-add-btn">
+                  Submit <i className="bi bi-plus-lg"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+         )}
+        {/* Edit User Modal END */}
+
 
          {/* Add User modal */}
       {showModal && (
